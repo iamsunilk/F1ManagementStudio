@@ -1,0 +1,6 @@
+@F1ManagementStudioWebAPI_HostAddress = http://localhost:5056
+
+GET {{F1ManagementStudioWebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
