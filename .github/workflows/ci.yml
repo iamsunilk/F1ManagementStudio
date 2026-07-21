@@ -1,0 +1,41 @@
+name: CI - Build & Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    runs-on: windows-latest
+
+    env:
+      SOLUTION_PATH: F1ManagementStudioWebAPI/F1ManagementStudioWebAPI.sln
+      TEST_PROJECT: F1ManagementStudioWebAPI.Tests/F1ManagementStudioWebAPI.Tests.csproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore NuGet packages
+      run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+    - name: Build solution
+      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ matrix.configuration }} --no-restore
+
+    - name: Run tests
+      run: dotnet test ${{ env.TEST_PROJECT }} --configuration ${{ matrix.configuration }} --no-build --verbosity normal
